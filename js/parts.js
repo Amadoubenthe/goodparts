@@ -1,32 +1,39 @@
-const url = 'http://localhost:3000/parts';
+const baseUrl = 'http://localhost:3000';
 
-// prixElement.innerText = `Prix: ${article.prix} € (${article.prix < 35 ? "€" : "€€€"})`;
+const res = await fetch(`${baseUrl}/parts`);
+const parts = await res.json();
 
-async function getParts() {
-	const res = await fetch(url);
+// Get btn elements
+const btnSortAscendingPrice = document.getElementById('btn-sortAscendingPrice');
+const btnFilterUnaffordableParts = document.getElementById(
+	'btn-filterUnaffordableParts'
+);
+const btnSortDescendingPrice = document.getElementById(
+	'btn-sortDescendingPrice'
+);
+const btnFilterWithoutDescription = document.getElementById(
+	'btn-filterWithoutDescription'
+);
 
-	const parts = await res.json();
+for (const article of parts) {
+	let allEment = [];
+	const imgElement = document.createElement('img');
+	imgElement.src = article.image;
+	allEment.push(imgElement);
 
-	for (const article of parts) {
-		let allEment = [];
-		const imgElement = document.createElement('img');
-		imgElement.src = article.image;
-		allEment.push(imgElement);
+	const titleElement = document.createElement('h2');
+	titleElement.innerText = article.nom;
+	allEment.push(titleElement);
 
-		const titleElement = document.createElement('h2');
-		titleElement.innerText = article.nom;
-		allEment.push(titleElement);
+	const priceElement = document.createElement('p');
+	priceElement.innerText = `Prix: ${article.prix} + €`;
+	allEment.push(priceElement);
 
-		const priceElement = document.createElement('p');
-		priceElement.innerText = `Prix: ${article.prix} + €`;
-		allEment.push(priceElement);
+	const categoryElement = document.createElement('p');
+	categoryElement.innerText = article.categorie;
+	allEment.push(categoryElement);
 
-		const categoryElement = document.createElement('p');
-		categoryElement.innerText = article.categorie;
-		allEment.push(categoryElement);
-
-		addChildElement(allEment);
-	}
+	addChildElement(allEment);
 }
 
 function addChildElement(elements) {
@@ -40,4 +47,29 @@ function addChildElement(elements) {
 	fichesElement.appendChild(articleElement);
 }
 
-getParts();
+function sortAscendingPrice() {
+	const partsCopy = Array.from(parts);
+	partsCopy.sort((a, b) => a.prix - b.prix);
+	console.log(partsCopy);
+}
+
+function filterUnaffordableParts() {
+	const filtredParts = parts.filter(part => part.prix <= 35);
+	console.log('Parts: ', filtredParts);
+}
+
+function sortDescendingPrice() {
+	const partsCopy = Array.from(parts);
+	partsCopy.sort((a, b) => b.prix - a.prix);
+	console.log(partsCopy);
+}
+
+function filterWithoutDescription() {
+	const filtredParts = parts.filter(part => part.categorie !== undefined);
+	console.log(filtredParts);
+}
+
+btnSortAscendingPrice.addEventListener('click', sortAscendingPrice);
+btnFilterUnaffordableParts.addEventListener('click', filterUnaffordableParts);
+btnSortDescendingPrice.addEventListener('click', sortDescendingPrice);
+btnFilterWithoutDescription.addEventListener('click', filterWithoutDescription);
