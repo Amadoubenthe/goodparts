@@ -1,6 +1,7 @@
 const baseUrl = 'http://localhost:3000';
 
 const res = await fetch(`${baseUrl}/parts`);
+
 const parts = await res.json();
 
 // Get btn elements
@@ -73,3 +74,42 @@ btnSortAscendingPrice.addEventListener('click', sortAscendingPrice);
 btnFilterUnaffordableParts.addEventListener('click', filterUnaffordableParts);
 btnSortDescendingPrice.addEventListener('click', sortDescendingPrice);
 btnFilterWithoutDescription.addEventListener('click', filterWithoutDescription);
+
+function getAffordablePrices() {
+	return parts.filter(part => part.prix <= 35);
+}
+
+function createAffordablePrices() {
+	const affordablePricesElement = document.querySelector('.affordable-prices');
+	const affordableParts = getAffordablePrices();
+	const ulElement = document.createElement('ul');
+
+	for (const part of affordableParts) {
+		const liElement = document.createElement('li');
+		liElement.innerText = `${part.nom} - ${part.prix} €`;
+		ulElement.appendChild(liElement);
+	}
+
+	affordablePricesElement.appendChild(ulElement);
+}
+
+createAffordablePrices();
+
+function createPartsAvailable() {
+	const partsAvailableElement = document.querySelector('.parts-available');
+	const partsAvailable = parts.filter(part => part.disponibilite === true);
+
+	const ulElement = document.createElement('ul');
+
+	for (const part of partsAvailable) {
+		const liElement = document.createElement('li');
+		liElement.innerText = `${part.nom} - ${part.prix} €`;
+		ulElement.appendChild(liElement);
+	}
+
+	partsAvailableElement.appendChild(ulElement);
+}
+
+createPartsAvailable();
+
+//const fichesElement = (document.querySelector('.fiches').innerHTML = '');
